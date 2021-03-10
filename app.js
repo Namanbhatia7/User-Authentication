@@ -24,15 +24,15 @@ const userSchema = {
 const User = new mongoose.model("User", userSchema);
 
 app.get('/', (req,res) =>{
-    res.render("Home")
+    res.render("home")
 })
 
 app.get('/login', (req,res) =>{
-    res.render("Login")
+    res.render("login")
 })
 
 app.get('/register', (req,res) =>{
-    res.render("Register")
+    res.render("register")
 })
 
 app.post("/register", (req,res) => {
@@ -46,6 +46,24 @@ app.post("/register", (req,res) => {
             res.render("secrets");
         }
     })
+})
+
+app.post("/login", (req,res) =>{
+    const username = req.body.username;
+    const password = req.body.password;
+
+    User.findOne({email:username}, (err,foundUser) => {
+        if(err){
+            console.log(err)
+        }else{
+            if(foundUser){
+                if(foundUser.password === password) {
+                    res.render("secrets")
+                }
+            }
+
+        }
+    });
 })
 
 app.listen(3000,() => {
