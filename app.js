@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
     password: String
 });
 
+const secret = "thisismybusinessnoneofyourbusiness";
+userSchema.plugin(encrypt, {secret: secret, encryptedFields: ['password']});
+
 const User = new mongoose.model("User", userSchema);
 
 app.get('/', (req,res) =>{
