@@ -35,6 +35,19 @@ app.get('/register', (req,res) =>{
     res.render("Register")
 })
 
+app.post("/register", (req,res) => {
+    const newUser = new User({
+        email: req.body.username,
+        password: req.body.password
+    });
+
+    newUser.save(function(err){
+        if(!err){
+            res.render("secrets");
+        }
+    })
+})
+
 app.listen(3000,() => {
     console.log("Server running on port 3000")
 })
