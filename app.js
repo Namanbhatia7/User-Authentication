@@ -62,6 +62,11 @@ app.get('/secrets', function(req,res){
     }else{
         res.redirect('/login');
     }
+});
+
+app.get('/logout', function(req,res){
+    req.logout();
+    res.redirect('/');
 })
 
 app.post("/register", (req,res) => {
@@ -93,7 +98,6 @@ app.post("/login", (req,res) =>{
                 res.redirect('/secrets')
             })
         }
-
     })
 })
 
