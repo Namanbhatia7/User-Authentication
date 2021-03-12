@@ -39,7 +39,7 @@ userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("User", userSchema);
 
-passport.use(User.createStategy());
+passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -56,19 +56,25 @@ app.get('/register', (req,res) =>{
     res.render("register")
 })
 
+app.get('/secrets', function(req,res){
+    if(req.isAuthenticated()){
+        res.render("secrets");
+    }else{
+        res.redirect('/login');
+    }
+})
+
 app.post("/register", (req,res) => {
-    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-        const newUser = new User({
-            email: req.body.username,
-            password: hash
-        });
-    
-        newUser.save(function(err){
-            if(!err){
-                res.render("secrets");
-            }
-        })
-    });
+   User.register({username: req.body.username}, req.body.password, (err,user) =>{
+       if(err){
+           console.log(err);
+           res.redirect('/register');
+       }else{
+           passport.authenticate("local")(req,res, function(){
+               res.redirect('/secrets');
+           })
+       }
+   })
     
 });
 
