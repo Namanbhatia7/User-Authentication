@@ -79,22 +79,22 @@ app.post("/register", (req,res) => {
 });
 
 app.post("/login", (req,res) =>{
-    const username = req.body.username;
-    const password = req.body.password;
+   
+    const user  = new User({
+        username: req.body.username,
+        password: req.body.passowrd
+    })
 
-    User.findOne({email:username}, (err,foundUser) => {
+    req.login(user,function(err){
         if(err){
             console.log(err)
         }else{
-            if(foundUser){
-                bcrypt.compare(password, foundUser.password, function(err, result) {
-                    if(result === true){
-                        res.render("secrets")
-                    }
-                });  
-            }
+            passport.authenticate("local")(req,res,function(){
+                res.redirect('/secrets')
+            })
         }
-    });
+
+    })
 })
 
 app.listen(3000,() => {
