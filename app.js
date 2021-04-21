@@ -59,12 +59,13 @@ passport.serializeUser(function(user, done) {
   
 
 passport.use(new GoogleStrategy({
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/secrets",
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },
   function(accessToken, refreshToken, profile, cb) {
+      console.log(profile);
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
@@ -75,9 +76,8 @@ app.get('/', (req,res) =>{
     res.render("home")
 })
 
-app.get('/auth/google', (req,res) =>{
-    passport.authenticate('google', { scope: ["profile"] }) 
-})
+app.get('/auth/google', 
+    passport.authenticate('google', { scope: ["profile"] }));
 
 app.get('/auth/google/secrets', 
 passport.authenticate("google", { failureRedirect: "/login"})
